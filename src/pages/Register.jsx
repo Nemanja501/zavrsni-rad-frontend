@@ -27,7 +27,11 @@ function Register() {
   async function handleSubmit(){
     try{
       const data = await AuthService.register(newUser);
-      if(data) navigate('/');
+      if(data.token){
+        localStorage.setItem('token', data.token);
+        navigate("/");
+        window.location.reload();
+      }
     }catch(err){
       setNewUser(defaultData);
       setIsChecked(false);

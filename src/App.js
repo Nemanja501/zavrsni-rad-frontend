@@ -3,10 +3,11 @@ import LayoutLoggedIn from './layout/LayoutLoggedIn';
 import LayoutLoggedOut from './layout/LayoutLoggedOut';
 import AppRouter from './router';
 
+const token = localStorage.getItem('token');
 function App() {
   return (
     <>
-      <LayoutLoggedOut/>
+      {token ? <LayoutLoggedIn/> : <LayoutLoggedOut/>}
       <AppRouter/>
     </>
   );

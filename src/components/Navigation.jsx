@@ -1,7 +1,23 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import AuthService from '../services/auth.service';
 
 function Navigation({isLoggedIn}) {
+    const navigate = useNavigate();
+
+  async function logout(){
+    try{
+        const response = await AuthService.logout();
+        if(response){
+            localStorage.removeItem('token');
+            navigate("/");
+            window.location.reload();
+        }
+    }catch(err){
+        console.log(err);
+    }
+  }  
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
@@ -26,6 +42,9 @@ function Navigation({isLoggedIn}) {
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to={'/create'}>Create New Gallery</Link>
+                </li>
+                <li className="nav-item">
+                    <button className="nav-link" onClick={logout}>Logout</button>
                 </li>
                 </>}
             </ul>
