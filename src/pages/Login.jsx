@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AuthService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
+import { tokenContext } from '../contexts/tokenContext';
 
 const defaultData = {
   email: '',
@@ -9,6 +10,7 @@ const defaultData = {
 function Login() {
   const [user, setUser]= useState(defaultData);
   const [errors, setErrors] = useState(defaultData);
+  const {token, setToken} = useContext(tokenContext);
   const navigate = useNavigate();
 
   async function handleSubmit(){
@@ -16,8 +18,8 @@ function Login() {
       const data = await AuthService.login(user);
       if(data.token){
         localStorage.setItem('token', data.token);
+        setToken(data.token);
         navigate("/");
-        window.location.reload();
       }
       if(data.error){
         setErrors({

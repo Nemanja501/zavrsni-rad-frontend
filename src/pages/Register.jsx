@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AuthService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
+import { tokenContext } from '../contexts/tokenContext';
 
 const defaultData = {
   first_name: '',
@@ -14,6 +15,7 @@ function Register() {
   const [newUser, setNewUser] = useState(defaultData);
   const [isChekced, setIsChecked] = useState(false);
   const [errors, setErrors] = useState(defaultData);
+  const {token, setToken} = useContext(tokenContext);
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -29,8 +31,8 @@ function Register() {
       const data = await AuthService.register(newUser);
       if(data.token){
         localStorage.setItem('token', data.token);
+        setToken(data.token);
         navigate("/");
-        window.location.reload();
       }
     }catch(err){
       setNewUser(defaultData);

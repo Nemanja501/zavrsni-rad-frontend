@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthService from '../services/auth.service';
+import {tokenContext} from '../contexts/tokenContext'
 
 function Navigation({isLoggedIn}) {
+    const {token, setToken} = useContext(tokenContext)
     const navigate = useNavigate();
 
   async function logout(){
@@ -10,8 +12,8 @@ function Navigation({isLoggedIn}) {
         const response = await AuthService.logout();
         if(response){
             localStorage.removeItem('token');
+            setToken('');
             navigate("/");
-            window.location.reload();
         }
     }catch(err){
         console.log(err);

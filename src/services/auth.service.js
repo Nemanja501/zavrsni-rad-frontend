@@ -1,6 +1,6 @@
 import HttpService from "./http.service"
 
-const token = localStorage.getItem('token');
+
 export default class AuthService extends HttpService{
     static register = async (data) =>{
         const response = await this.client.request({
@@ -27,7 +27,7 @@ export default class AuthService extends HttpService{
             method: 'GET',
             url: '/logout',
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         });
 
