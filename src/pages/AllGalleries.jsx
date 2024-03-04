@@ -5,31 +5,70 @@ import GalleryCard from '../components/GalleryCard';
 function AllGalleries() {
   const [galleries, setGalleries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filteredGalleries, setFilteredGalleries] = useState([]);
+  const [metadata, setMetadata] = useState({});
+  const [filter, setFilter] = useState('');
+  const [filterMode, setFilterMode] = useState(false);
 
   useEffect(()=>{
-    fetchGalleries();
-  }, [currentPage])
+    if(currentPage === 1){
+      initalFetch();
+    }else{
+      fetchMoreGalleries();
+    }
+  },[currentPage]);
 
-  async function fetchGalleries(){
+
+  async function initalFetch(){
+    try{
+      const data = await GalleriesService.getAll();
+      if(data){
+        setGalleries(data.data);
+        setMetadata(data.meta);
+      }
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  async function fetchMoreGalleries(){
     try{
       const data = await GalleriesService.getAll(currentPage);
       if(data){
-        console.log(data);
         setGalleries([...galleries, ...data.data]);
-        
+        setMetadata(data.meta);
+        setFilterMode(false);
       }
     }catch(err){
-      console.log(err.message)
+      console.log(err);
+    }
+  }
+
+  async function fetchFiltered(){
+    if(filter.length > 0){
+      const data = await GalleriesService.getAll(1, filter);
+      setFilteredGalleries(data.data);
+      setFilterMode(true);
+      console.log('filter true', data.data);
+    }else{
+      setFilterMode(false);
+      setCurrentPage(1);
     }
   }
 
   return (
     <div>
       <h1>All galleries</h1>
-      {galleries.length > 0 ? galleries.map(gallery =>{
+      <div className="input-group mb-3">
+        <button className="btn btn-outline-secondary" type="button" onClick={() =>{fetchFiltered();}}>Filter</button>
+        <input type="text" className="form-control" placeholder=""  onChange={(e) => setFilter(e.target.value)}/>
+      </div>
+      {filterMode ? filteredGalleries.map((gallery)=>{
         return <GalleryCard key={gallery.id} gallery={gallery}/>
-      }) : 'No galleries have been created'}
-      <button type="button" className="btn btn-secondary mt-3" onClick={()=> setCurrentPage(page => page + 1)}>Load more</button>
+      }) :  galleries.map((gallery) =>{
+        return <GalleryCard key={gallery.id} gallery={gallery}/>
+      })}
+      {galleries.length < metadata.total && <button type="button" className="btn btn-secondary mt-3" onClick={()=>{ setCurrentPage(page => page + 1);}}>Load more</button>}
     </div>
   )
 }
