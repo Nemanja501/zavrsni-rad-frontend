@@ -65,10 +65,11 @@ function AllGalleries() {
       </div>
       {filterMode ? filteredGalleries.map((gallery)=>{
         return <GalleryCard key={gallery.id} gallery={gallery}/>
-      }) :  galleries.map((gallery) =>{
+      }) : <> {galleries.map((gallery) =>{
         return <GalleryCard key={gallery.id} gallery={gallery}/>
       })}
       {galleries.length < metadata.total && <button type="button" className="btn btn-secondary mt-3" onClick={()=>{ setCurrentPage(page => page + 1);}}>Load more</button>}
+      </>}
     </div>
   )
 }

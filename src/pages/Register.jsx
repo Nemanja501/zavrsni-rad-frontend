@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import AuthService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
 import { tokenContext } from '../contexts/tokenContext';
+import { userContext } from '../contexts/userContext';
 
 const defaultData = {
   first_name: '',
@@ -16,6 +17,7 @@ function Register() {
   const [isChekced, setIsChecked] = useState(false);
   const [errors, setErrors] = useState(defaultData);
   const {token, setToken} = useContext(tokenContext);
+  const {loggedInUser, setLoggedInUser} = useContext(userContext);
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -29,9 +31,11 @@ function Register() {
   async function handleSubmit(){
     try{
       const data = await AuthService.register(newUser);
-      if(data.token){
+      if(data){
         localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
         setToken(data.token);
+        setLoggedInUser(JSON.stringify(data.user));
         navigate("/");
       }
     }catch(err){

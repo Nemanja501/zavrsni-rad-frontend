@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import AuthService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
 import { tokenContext } from '../contexts/tokenContext';
+import { userContext } from '../contexts/userContext';
 
 const defaultData = {
   email: '',
@@ -11,14 +12,17 @@ function Login() {
   const [user, setUser]= useState(defaultData);
   const [errors, setErrors] = useState(defaultData);
   const {token, setToken} = useContext(tokenContext);
+  const {loggedInUser, setLoggedInUser} = useContext(userContext);
   const navigate = useNavigate();
 
   async function handleSubmit(){
     try{
       const data = await AuthService.login(user);
-      if(data.token){
+      if(data){
         localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
         setToken(data.token);
+        setLoggedInUser(JSON.stringify(data.user));
         navigate("/");
       }
       if(data.error){

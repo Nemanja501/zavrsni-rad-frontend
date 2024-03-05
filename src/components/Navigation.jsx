@@ -2,9 +2,11 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthService from '../services/auth.service';
 import {tokenContext} from '../contexts/tokenContext'
+import { userContext } from '../contexts/userContext';
 
 function Navigation({isLoggedIn}) {
-    const {token, setToken} = useContext(tokenContext)
+    const {token, setToken} = useContext(tokenContext);
+    const {loggedInUser, setLoggedInUser} = useContext(userContext);
     const navigate = useNavigate();
 
   async function logout(){
@@ -12,6 +14,8 @@ function Navigation({isLoggedIn}) {
         const response = await AuthService.logout();
         if(response){
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setLoggedInUser('');
             setToken('');
             navigate("/");
         }
