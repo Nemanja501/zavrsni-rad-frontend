@@ -6,7 +6,7 @@ import GalleriesService from '../services/galleries.sevice';
 function SingleGallery() {
   const {id} = useParams();
   const [gallery, setGallery] = useState({});
-  const date = new Date(gallery.created_at);
+  const galleryDate = formatDate(gallery.created_at);
 
   useEffect(()=>{
     fetchSingleGallery();
@@ -23,11 +23,16 @@ function SingleGallery() {
     }
   }
 
+  function formatDate(dateString){
+    const date = new Date(dateString);
+    return date.getDate() +  '/' + date.getMonth() + '/' + date.getFullYear();
+  }
+
   return (
     <div>
       <h1>{gallery.title}</h1>
       <h4>Author: <Link to={`/authors/${gallery?.user?.id}`} style={{ textDecoration: 'none', color: 'white' }}>{gallery?.user?.first_name} {gallery?.user?.last_name}</Link></h4>
-      <h5>Created at: {date.getDate() +  '/' + date.getMonth() + '/' + date.getFullYear()}</h5>
+      <h5>Created at: {galleryDate}</h5>
       <p>{gallery.description}</p>
       <div id="carousel" className="carousel slide">
         <div className="carousel-inner">
@@ -49,6 +54,12 @@ function SingleGallery() {
           <span className="visually-hidden">Next</span>
         </button>
       </div>
+      <h3>Comments:</h3>
+      <ul className="list-group list-group-flush">
+        {gallery?.comments?.map((comment)=>{
+          return <li key={comment.id} className="list-group-item">{comment.content} | by: {comment?.user?.first_name + ' ' + comment?.user?.last_name} | created at: {formatDate(comment.created_at)}</li>
+        })}
+    </ul>
     </div>
   )
 }

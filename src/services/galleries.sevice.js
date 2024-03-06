@@ -52,5 +52,18 @@ export default class GalleriesService extends HttpService{
         return response.data;
     }
 
+    static getAuthorGalleries = async (authorId, page = 1 ,filter = '')=>{
+        const response = await this.client.request({
+            method: 'GET',
+            url: `/authors/${authorId}`,
+            params: {
+                page,
+                filter
+            }
+        });
+
+        console.log('get author galleries', response);
+        return response.data;
+    }
 
 }
