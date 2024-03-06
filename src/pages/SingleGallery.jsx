@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import GalleriesService from '../services/galleries.sevice';
 import AddComment from '../components/AddComment';
 import { userContext } from '../contexts/userContext';
@@ -11,6 +11,8 @@ function SingleGallery() {
   const [gallery, setGallery] = useState({});
   const galleryDate = formatDate(gallery.created_at);
   const {loggedInUser, setLoggedInUser} = useContext(userContext);
+  const navigate = useNavigate();
+  
 
   useEffect(()=>{
     fetchSingleGallery();
@@ -43,12 +45,24 @@ function SingleGallery() {
     }
   }
 
+  async function deleteGallery(id){
+    try{
+      if(window.confirm("Do you want to delete this gallery?")){
+        const data = await GalleriesService.delete(id);
+        if(data) navigate("/my-galleries");
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   return (
     <div>
       <h1>{gallery.title}</h1>
       <h4>Author: <Link to={`/authors/${gallery?.user?.id}`} style={{ textDecoration: 'none', color: 'white' }}>{gallery?.user?.first_name} {gallery?.user?.last_name}</Link></h4>
       <h5>Created at: {galleryDate}</h5>
       <p>{gallery.description}</p>
+      {loggedInUser.id === gallery?.user?.id && <button type="button" className="btn btn-danger" onClick={() => deleteGallery(id)}>Delete gallery</button>}
       <div id="carousel" className="carousel slide">
         <div className="carousel-inner">
           {gallery.pictures && <div className="carousel-item active">

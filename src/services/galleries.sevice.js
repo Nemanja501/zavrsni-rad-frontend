@@ -66,4 +66,17 @@ export default class GalleriesService extends HttpService{
         return response.data;
     }
 
+    static delete = async (id)=>{
+        const response = await this.client.request({
+            method: 'DELETE',
+            url: `/delete-gallery/${id}`,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        console.log('delete gallery', response);
+        return response;
+    }
+
 }
