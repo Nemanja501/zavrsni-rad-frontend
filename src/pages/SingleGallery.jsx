@@ -62,7 +62,8 @@ function SingleGallery() {
       <h4>Author: <Link to={`/authors/${gallery?.user?.id}`} style={{ textDecoration: 'none', color: 'white' }}>{gallery?.user?.first_name} {gallery?.user?.last_name}</Link></h4>
       <h5>Created at: {galleryDate}</h5>
       <p>{gallery.description}</p>
-      {loggedInUser.id === gallery?.user?.id && <button type="button" className="btn btn-danger" onClick={() => deleteGallery(id)}>Delete gallery</button>}
+      {loggedInUser.id === gallery?.user?.id && <><button type="button" className="btn btn-danger" onClick={() => deleteGallery(id)}>Delete gallery</button>
+      <Link to={`/edit-gallery/${id}`} className='btn btn-secondary'>Edit gallery</Link></>}
       <div id="carousel" className="carousel slide">
         <div className="carousel-inner">
           {gallery.pictures && <div className="carousel-item active">

@@ -21,6 +21,7 @@ function AppRouter() {
         {token ? <>
         <Route path='/my-galleries' element={<MyGalleries/>} />
         <Route path='/create' element={<CreateNewGallery/>} />
+        <Route path='/edit-gallery/:id' element={<CreateNewGallery/>} />
         </> : <>
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />

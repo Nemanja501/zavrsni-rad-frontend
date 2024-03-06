@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { userContext } from '../contexts/userContext'
 import GalleriesService from '../services/galleries.sevice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const defaultData = {
   title: '',
@@ -12,6 +12,8 @@ function CreateNewGallery() {
   const {loggedInUser, setLoggedInUser} = useContext(userContext);
   const [urlInputs, setUrlInputs] = useState(['']);
   const navigate = useNavigate();
+  const {id} = useParams();
+  const [editMode, setEditMode] = useState(false);
   const [errors, setErrors] = useState(defaultData);
   const [newGallery, setNewGallery] = useState({
     title: '',
@@ -20,12 +22,29 @@ function CreateNewGallery() {
     user_id: loggedInUser.id
   })
 
+  useEffect(()=>{
+    if(id){
+      setEditMode(true)
+    }else{
+      setEditMode(false);
+    }
+  }, [id])
+
   async function handleSubmit(){
     try{
-      const data = await GalleriesService.create(newGallery);
-      if(data){
-        navigate("/my-galleries");
+      if(editMode){
+        const data = await GalleriesService.update(newGallery, id);
+        if(data){
+          navigate(`/galleries/${id}`);
+        }
+      }else{
+        const data = await GalleriesService.create(newGallery);
+        if(data){
+          navigate("/my-galleries");
+        }
       }
+      
+
     }catch(err){
       console.log(err.response.data.errors);
       const _errors = err.response.data.errors;
@@ -41,7 +60,7 @@ function CreateNewGallery() {
 
   return (
     <div>
-      <h1>Create new gallery</h1>
+      <h1>{editMode ? 'Edit gallery' : 'Create new gallery'}</h1>
       <form>
         <div className="mb-3">
           <label className="form-label">Title</label>

@@ -79,4 +79,18 @@ export default class GalleriesService extends HttpService{
         return response;
     }
 
+    static update = async (data, id)=>{
+        const response = await this.client.request({
+            method: 'POST',
+            url: `/edit-gallery/${id}`,
+            data,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        console.log('update gallery', response);
+        return response.data;
+    }
+
 }
