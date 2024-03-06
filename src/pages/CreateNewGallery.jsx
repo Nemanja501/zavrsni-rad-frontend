@@ -3,15 +3,16 @@ import { userContext } from '../contexts/userContext'
 import GalleriesService from '../services/galleries.sevice';
 import { useNavigate } from 'react-router-dom';
 
+const defaultData = {
+  title: '',
+  description: '',
+  pictures: ''
+}
 function CreateNewGallery() {
   const {loggedInUser, setLoggedInUser} = useContext(userContext);
   const [urlInputs, setUrlInputs] = useState(['']);
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({
-    title: '',
-    description: '',
-    pictures: ''
-  });
+  const [errors, setErrors] = useState(defaultData);
   const [newGallery, setNewGallery] = useState({
     title: '',
     description: '',
@@ -44,22 +45,22 @@ function CreateNewGallery() {
       <form>
         <div className="mb-3">
           <label className="form-label">Title</label>
-          <input type="text" className="form-control" value={newGallery.title} onChange={(e) => setNewGallery({...newGallery, title: e.target.value})}/>
+          <input type="text" className="form-control" value={newGallery.title} onChange={(e) =>{ setNewGallery({...newGallery, title: e.target.value}); setErrors(defaultData) }}/>
           {errors.title && <div className="alert alert-danger" role="alert">{errors.title}</div>}
         </div>
         <div className="mb-3">
           <label className="form-label">Description</label>
-          <textarea className="form-control" value={newGallery.description} onChange={(e) => setNewGallery({...newGallery, description: e.target.value})}/>
+          <textarea className="form-control" value={newGallery.description} onChange={(e) =>{ setNewGallery({...newGallery, description: e.target.value}); setErrors(defaultData) }}/>
           {errors.description && <div className="alert alert-danger" role="alert">{errors.description}</div>}
         </div>
         {urlInputs.map((input, index)=>{
           return (<div className="mb-3" key={index}>
           <label className="form-label">Picture URL</label>
-          <input type="text" className="form-control" onChange={(e) => setNewGallery({...newGallery, pictures: [...newGallery.pictures, e.target.value]})}/>
+          <input type="text" className="form-control" onChange={(e) =>{ setNewGallery({...newGallery, pictures: [...newGallery.pictures, e.target.value]}); setErrors(defaultData) }}/>
         </div>);
         })}
         {errors.pictures && <div className="alert alert-danger" role="alert">{errors.pictures}</div>}
-        <button type="button" className="btn btn-secondary" onClick={()=>setUrlInputs([...urlInputs, ''])}>Add another url</button>
+        <button type="button" className="btn btn-secondary" onClick={()=>{ setUrlInputs([...urlInputs, '']); setErrors(defaultData) }}>Add another url</button>
         <br/>
         <button type="button" className="btn btn-primary mt-3" onClick={handleSubmit}>Submit</button>
     </form>

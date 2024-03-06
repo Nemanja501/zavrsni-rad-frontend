@@ -27,7 +27,6 @@ export default class GalleriesService extends HttpService{
             }
         });
 
-        console.log('my galleries service', response);
         return response.data;
     }
 
@@ -41,6 +40,15 @@ export default class GalleriesService extends HttpService{
             }
         });
 
+        return response.data;
+    }
+
+    static getById = async (id)=>{
+        const response = await this.client.request({
+            method: 'GET',
+            url: `/galleries/${id}`
+        });
+        
         return response.data;
     }
 

@@ -22,7 +22,7 @@ function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         setToken(data.token);
-        setLoggedInUser(JSON.stringify(data.user));
+        setLoggedInUser(data.user);
         navigate("/");
       }
       if(data.error){
